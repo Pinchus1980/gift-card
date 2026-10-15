@@ -3,25 +3,47 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#11121a" />
+  <meta name="theme-color" content="#100b1c" />
   <title>Tu regalo te espera</title>
   <style>
-    :root { color-scheme: dark; --bg:#11121a; --panel:#1b1c28; --text:#f6f4fb; --muted:#b9b6c9; --accent:#d7c5ff; }
+    :root { color-scheme: dark; --bg:#100b1c; --panel:#1b1428; --text:#f8f5ff; --muted:#c1b8d3; --accent:#d7c0ff; }
     * { box-sizing: border-box; }
-    body { margin:0; min-height:100vh; padding:28px 16px; display:grid; place-items:center; font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; color:var(--text); background:radial-gradient(ellipse at top, #29223e 0%, var(--bg) 58%); }
-    .card { width:min(100%, 480px); padding:clamp(22px, 6vw, 34px); border:1px solid #ffffff18; border-radius:28px; background:linear-gradient(160deg,#20202eeb,#171722f5); box-shadow:0 24px 70px #0007; text-align:center; }
+    body { margin:0; min-height:100vh; padding:28px 16px; display:grid; place-items:center; font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; color:var(--text); background:radial-gradient(ellipse at 50% -10%, #382353 0%, #1a1029 38%, var(--bg) 75%); }
+    .card { width:min(100%, 480px); padding:clamp(22px, 6vw, 34px); border:1px solid #ffffff18; border-radius:28px; background:linear-gradient(160deg,rgba(34,23,51,.96),rgba(17,12,27,.98)); box-shadow:0 24px 70px #0009,0 0 55px #9b68ff0d; text-align:center; position:relative; overflow:hidden; }
     .eyebrow { color:var(--accent); text-transform:uppercase; letter-spacing:.18em; font-size:.72rem; font-weight:700; }
     h1 { margin:12px 0 8px; font-size:clamp(1.8rem,7vw,2.45rem); line-height:1.08; }
     .intro { margin:0 auto 24px; max-width:340px; color:var(--muted); line-height:1.55; }
     .screen { display:none; }
     .screen.active { display:block; animation:rise .4s ease-out both; }
-    .welcome-art { width:112px; height:112px; margin:26px auto 24px; border-radius:50%; display:grid; place-items:center; border:1px solid #d7c5ff66; background:radial-gradient(circle at 35% 30%,#5d4b7b,#242033 68%); box-shadow:0 0 45px #bda0ff22,inset 0 0 24px #ffffff0a; }
-    .welcome-art span { font-size:3.1rem; color:#e5d8ff; text-shadow:0 0 22px #d7c5ff88; }
+    #welcomeScreen { position:relative; isolation:isolate; }
+    #welcomeScreen::before { content:""; position:absolute; z-index:-1; width:260px; height:260px; left:50%; top:45px; transform:translateX(-50%); border-radius:50%; background:radial-gradient(circle,#8b5cf629 0%,#6d28d91a 42%,transparent 72%); pointer-events:none; animation:glow 5s ease-in-out infinite; }
+    .welcome-art { width:122px; height:122px; margin:28px auto 25px; border-radius:50%; position:relative; display:grid; place-items:center; border:1px solid #c9a8ff75; background:radial-gradient(circle at 34% 27%,#6b4a91 0%,#332047 42%,#191323 76%); box-shadow:0 0 24px #bda0ff20,0 0 62px #9c66ff1b,inset 0 0 28px #ffffff0b; animation:float 5s ease-in-out infinite; }
+    .welcome-art::before,.welcome-art::after { content:""; position:absolute; border:1px solid #d9c4ff4d; border-radius:50%; inset:-9px; transform:rotate(-25deg) scaleY(.35); }
+    .welcome-art::after { inset:-16px; transform:rotate(38deg) scaleY(.35); border-color:#a78bfa3b; }
+    .welcome-art span { font-size:3.1rem; color:#f0e7ff; text-shadow:0 0 12px #d7c5ffbb,0 0 32px #a78bfa99; animation:twinkle 3s ease-in-out infinite; }
+    .particles { position:absolute; inset:0; pointer-events:none; overflow:hidden; z-index:-1; }
+    .particle { position:absolute; display:block; width:3px; height:3px; border-radius:50%; background:#e9d5ff; box-shadow:0 0 9px 2px #a78bfa88; opacity:0; animation:drift var(--duration,7s) ease-in-out var(--delay,0s) infinite; }
+    .particle:nth-child(1) { left:12%; top:24%; --duration:7.4s; --delay:-2s; }
+    .particle:nth-child(2) { left:83%; top:20%; --duration:8.2s; --delay:-5s; }
+    .particle:nth-child(3) { left:22%; top:56%; --duration:6.8s; --delay:-1s; }
+    .particle:nth-child(4) { left:76%; top:60%; --duration:9s; --delay:-4s; }
+    .particle:nth-child(5) { left:50%; top:17%; --duration:7s; --delay:-3s; }
+    .particle:nth-child(6) { left:90%; top:42%; --duration:8.6s; --delay:-2.5s; }
+    .particle:nth-child(7) { left:8%; top:68%; --duration:7.8s; --delay:-6s; }
+    .particle:nth-child(8) { left:64%; top:72%; --duration:9.4s; --delay:-1.5s; }
+    #welcomeScreen .eyebrow { letter-spacing:.22em; }
+    #welcomeScreen h1 { text-wrap:balance; text-shadow:0 0 30px #a78bfa20; }
+    #welcomeScreen .intro { max-width:310px; }
+    #discoverButton { background:linear-gradient(105deg,#c4a5ff,#e2ccff 55%,#c5a8ff); box-shadow:0 8px 28px #a78bfa30, inset 0 1px #ffffff80; transition:transform .2s ease, box-shadow .2s ease; }
+    #discoverButton:hover { transform:translateY(-2px); box-shadow:0 12px 34px #a78bfa45,inset 0 1px #ffffff90; }
+    #discoverButton:active { transform:scale(.985); }
     .scratch-wrap { position:relative; overflow:hidden; border-radius:20px; min-height:218px; background:linear-gradient(145deg,#29243b,#242638); border:1px solid #ffffff18; isolation:isolate; }
     .prize { min-height:218px; padding:24px 18px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:9px; }
     .prize .small { font-size:.82rem; color:#d8c9ff; }
     .message { font-size:1.08rem; line-height:1.4; font-weight:650; white-space:pre-wrap; }
     .amount { margin-top:2px; font-size:clamp(2rem,10vw,3rem); line-height:1; font-weight:800; letter-spacing:-.04em; }
+    .amount-reveal { visibility:hidden; }
+    .scratch-wrap.is-revealed .amount-reveal { visibility:visible; animation:rise .45s ease-out both; }
     .hint { color:var(--muted); font-size:.88rem; margin:14px 0 0; }
     canvas { position:absolute; inset:0; z-index:2; width:100%; height:100%; touch-action:none; cursor:crosshair; }
     .scratch-wrap.is-revealed canvas { display:none; }
@@ -35,6 +57,10 @@
     .button.secondary { background:transparent; color:var(--text); border:1px solid #ffffff35; box-shadow:none; margin-top:10px; }
     .footer { margin:20px 0 0; color:#918da4; font-size:.74rem; line-height:1.45; }
     .sparkle { font-size:1.6rem; }
+    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-5px)} }
+    @keyframes twinkle { 0%,100%{opacity:.85;transform:scale(1)} 50%{opacity:1;transform:scale(1.08)} }
+    @keyframes glow { 0%,100%{opacity:.65;transform:translateX(-50%) scale(.94)} 50%{opacity:1;transform:translateX(-50%) scale(1.06)} }
+    @keyframes drift { 0%{opacity:0;transform:translate3d(0,12px,0) scale(.5)} 25%{opacity:.75} 70%{opacity:.45} 100%{opacity:0;transform:translate3d(9px,-26px,0) scale(1.2)} }
     @keyframes pop { 0%{transform:scale(.985)} 65%{transform:scale(1.012)} 100%{transform:scale(1)} }
     @keyframes rise { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
     @media (prefers-reduced-motion: reduce) { *,*::before,*::after { animation-duration:.01ms !important; transition-duration:.01ms !important; } }
@@ -43,12 +69,13 @@
 <body>
   <main class="card">
     <section class="screen active" id="welcomeScreen">
-      <div class="eyebrow">Una sorpresa para vos</div>
-      <h1>Algo especial te espera ✨</h1>
-      <p class="intro">Preparé un regalo para vos. Cuando estés listo, descubrí qué hay detrás de esta sorpresa.</p>
+      <div class="particles" aria-hidden="true"><i class="particle"></i><i class="particle"></i><i class="particle"></i><i class="particle"></i><i class="particle"></i><i class="particle"></i><i class="particle"></i><i class="particle"></i></div>
+      <div class="eyebrow">TENEMOS UNA SORPRESA PARA VOS</div>
+      <h1>HAY ALGO ESPERÁNDOTE....</h1>
+      <p class="intro">PREPARAMOS ALGO, ESPEREMOS QUE TE GUSTE. CUANDO QUIERAS, TOCÁ EL BOTÓN Y DESCUBRÍ TU REGALO.</p>
       <div class="welcome-art" aria-hidden="true"><span>✦</span></div>
       <button class="button" id="discoverButton" type="button">Descubrir mi regalo ✨</button>
-      <p class="footer">Un pequeño momento preparado especialmente para vos.</p>
+      <p class="footer">Un pequeño momento, preparado especialmente para vos.</p>
     </section>
 
     <section class="screen" id="scratchScreen">
@@ -60,9 +87,11 @@
           <div class="sparkle" aria-hidden="true">✦ ✧ ✦</div>
           <div class="small">TU MENSAJE</div>
           <div class="message" id="giftMessage">[Acá va el mensaje personalizado que definamos más adelante.]</div>
-          <div class="small">TU REGALO</div>
-          <div class="amount" id="giftAmount">[IMPORTE]</div>
-          <div class="small">Un gusto para darte vos</div>
+          <div class="amount-reveal">
+            <div class="small">TU REGALO</div>
+            <div class="amount" id="giftAmount">[IMPORTE]</div>
+            <div class="small">Un gusto para darte vos</div>
+          </div>
         </div>
         <canvas id="scratchCanvas" aria-label="Raspá acá con el dedo o el mouse"></canvas>
       </section>
@@ -71,14 +100,14 @@
       <p class="status" id="status">Tu regalo está a punto de aparecer.</p>
       <button class="button hidden" id="whatsappButton" type="button">Avisar que recibí mi regalo por WhatsApp</button>
       <button class="button secondary" id="backButton" type="button">Volver al inicio</button>
-      <p class="footer">El regalo se coordina por WhatsApp. La transferencia, si corresponde, se realiza por separado.</p>
+      
     </section>
   </main>
 
   <script>
     // PERSONALIZACIÓN: reemplazá estos textos cuando definamos el mensaje y el importe.
-    const giftMessage = ' [Acá va el mensaje personalizado que definamos más adelante.] '.trim();
-    const giftAmount = '[IMPORTE]';
+    const giftMessage = 'FELIZ DIAAAAAA!!!!\nNo nos olvidamos de vos, pero preferimos que te compres lo que vos realmente quieras (tus gays jajajaja)\nTE AMAMOS\n(Cata-Guada-Sergio)';
+    const giftAmount = '$200.000';
     // Para activar WhatsApp, escribí el número con código de país y área, solo dígitos.
     // Ejemplo de formato argentino: 54911XXXXXXXX (sin +, espacios ni guiones).
     const whatsappNumber = '';
@@ -206,7 +235,7 @@
     function confetti() {
       const colors = ['#e2d2ff', '#fff0b8', '#f7c7ed', '#b8f0e7', '#ffffff'];
       const pieces = [];
-      for (let i = 0; i < 85; i++) pieces.push({ x: Math.random() * window.innerWidth, y: -20 - Math.random() * window.innerHeight * .35, vx: (Math.random() - .5) * 3, vy: 2 + Math.random() * 4, size: 4 + Math.random() * 6, rot: Math.random() * 6, vr: (Math.random() - .5) * .18, color: colors[i % colors.length] });
+      for (let i = 0; i < 260; i++) pieces.push({ x: Math.random() * window.innerWidth, y: -20 - Math.random() * window.innerHeight * .75, vx: (Math.random() - .5) * 5.5, vy: 1.8 + Math.random() * 5.5, size: 4 + Math.random() * 8, rot: Math.random() * 6, vr: (Math.random() - .5) * .24, color: colors[i % colors.length] });
       const c = document.createElement('canvas');
       c.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:99';
       document.body.appendChild(c);
@@ -218,7 +247,7 @@
         g.clearRect(0, 0, innerWidth, innerHeight);
         pieces.forEach(p => { p.x += p.vx; p.y += p.vy; p.rot += p.vr; p.vy += .025; g.save(); g.translate(p.x, p.y); g.rotate(p.rot); g.fillStyle = p.color; g.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * .7); g.restore(); });
         frames++;
-        if (frames < 150 && pieces.some(p => p.y < innerHeight + 20)) requestAnimationFrame(tick); else c.remove();
+        if (frames < 240 && pieces.some(p => p.y < innerHeight + 30)) requestAnimationFrame(tick); else c.remove();
       }
       requestAnimationFrame(tick);
     }
