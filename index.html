@@ -1,52 +1,193 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#111827">
-  <title>Un regalo para vos</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#11121a" />
+  <title>Tu regalo te espera</title>
   <style>
-    :root{--bg:#111827;--text:#f9fafb;--muted:#cbd5e1;--accent:#e7c783;--accentText:#171717}
-    *{box-sizing:border-box}
-    body{margin:0;min-height:100svh;display:grid;place-items:center;padding:24px 16px;color:var(--text);background:radial-gradient(ellipse at 50% 0%,rgba(231,199,131,.16),transparent 48%),var(--bg);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-    .page{width:min(100%,460px);text-align:center}.eyebrow{color:var(--accent);font-size:.76rem;letter-spacing:.22em;text-transform:uppercase;margin-bottom:18px}
-    .stage{position:relative;overflow:hidden;padding:30px 22px;border:1px solid rgba(255,255,255,.12);border-radius:24px;background:linear-gradient(145deg,rgba(255,255,255,.075),rgba(255,255,255,.025));box-shadow:0 24px 80px rgba(0,0,0,.25)}
-    .sparkle{font-size:2.5rem;margin:4px 0 18px;color:var(--accent)}h1{font-size:clamp(1.8rem,8vw,2.7rem);line-height:1.08;margin:0 0 16px}p{color:var(--muted);line-height:1.65;margin:0 auto;max-width:34ch}
-    .reveal{opacity:0;transform:translateY(14px);max-height:0;overflow:hidden;pointer-events:none;transition:opacity .65s ease,transform .65s ease,max-height .8s ease,margin .6s ease;margin-top:0}
-    .reveal.visible{opacity:1;transform:translateY(0);max-height:420px;pointer-events:auto;margin-top:26px}.amount{color:var(--accent);font-size:clamp(2rem,9vw,3rem);font-weight:800;letter-spacing:-.04em;margin:10px 0 18px}
-    button{border:0;border-radius:999px;padding:15px 22px;width:100%;background:var(--accent);color:var(--accentText);font-size:1rem;font-weight:750;cursor:pointer;margin-top:24px;transition:transform .15s ease,filter .15s ease}
-    button:hover{filter:brightness(1.06)}button:active{transform:scale(.985)}button:focus-visible{outline:3px solid white;outline-offset:4px}
-    .secondary{background:transparent;border:1px solid rgba(255,255,255,.22);color:var(--text);margin-top:12px}.footnote{color:#94a3b8;font-size:.78rem;margin-top:18px}.hidden{display:none!important}
-    .confetti{position:fixed;top:-12px;width:8px;height:13px;pointer-events:none;z-index:5;animation:fall 2.8s linear forwards}@keyframes fall{to{transform:translateY(110svh) rotate(720deg);opacity:.15}}
-    @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+    :root { color-scheme: dark; --bg:#11121a; --panel:#1b1c28; --text:#f6f4fb; --muted:#b9b6c9; --accent:#d7c5ff; }
+    * { box-sizing: border-box; }
+    body { margin:0; min-height:100vh; padding:28px 16px; display:grid; place-items:center; font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; color:var(--text); background:radial-gradient(ellipse at top, #29223e 0%, var(--bg) 58%); }
+    .card { width:min(100%, 480px); padding:clamp(22px, 6vw, 34px); border:1px solid #ffffff18; border-radius:28px; background:linear-gradient(160deg,#20202eeb,#171722f5); box-shadow:0 24px 70px #0007; text-align:center; }
+    .eyebrow { color:var(--accent); text-transform:uppercase; letter-spacing:.18em; font-size:.72rem; font-weight:700; }
+    h1 { margin:12px 0 8px; font-size:clamp(1.8rem,7vw,2.45rem); line-height:1.08; }
+    .intro { margin:0 auto 24px; max-width:340px; color:var(--muted); line-height:1.55; }
+    .scratch-wrap { position:relative; overflow:hidden; border-radius:20px; min-height:218px; background:linear-gradient(145deg,#29243b,#242638); border:1px solid #ffffff18; isolation:isolate; }
+    .prize { min-height:218px; padding:24px 18px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:9px; }
+    .prize .small { font-size:.82rem; color:#d8c9ff; }
+    .message { font-size:1.08rem; line-height:1.4; font-weight:650; white-space:pre-wrap; }
+    .amount { margin-top:2px; font-size:clamp(2rem,10vw,3rem); line-height:1; font-weight:800; letter-spacing:-.04em; }
+    .hint { color:var(--muted); font-size:.88rem; margin:14px 0 0; }
+    canvas { position:absolute; inset:0; z-index:2; width:100%; height:100%; touch-action:none; cursor:crosshair; }
+    .scratch-wrap.is-revealed canvas { display:none; }
+    .scratch-wrap.is-revealed { animation:pop .55s ease-out; }
+    .progress { height:4px; background:#ffffff14; border-radius:99px; overflow:hidden; margin-top:16px; }
+    .progress span { display:block; width:0%; height:100%; background:linear-gradient(90deg,#bba1ff,#f3d7ff); transition:width .12s linear; }
+    .status { min-height:20px; margin:8px 0 0; color:#c9c2db; font-size:.78rem; }
+    .button { appearance:none; border:0; display:none; width:100%; margin-top:20px; padding:15px 18px; border-radius:14px; background:linear-gradient(100deg,#d8c6ff,#f0d9ff); color:#20182e; font:700 1rem system-ui,sans-serif; cursor:pointer; box-shadow:0 8px 26px #bda0ff25; }
+    .button.visible { display:block; animation:rise .45s ease-out both; }
+    .footer { margin:20px 0 0; color:#918da4; font-size:.74rem; line-height:1.45; }
+    .sparkle { font-size:1.6rem; }
+    @keyframes pop { 0%{transform:scale(.985)} 65%{transform:scale(1.012)} 100%{transform:scale(1)} }
+    @keyframes rise { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+    @media (prefers-reduced-motion: reduce) { *,*::before,*::after { animation-duration:.01ms !important; transition-duration:.01ms !important; } }
   </style>
 </head>
 <body>
-  <main class="page">
-    <div class="eyebrow">Algo especial para vos</div>
-    <section class="stage" aria-live="polite">
-      <div class="sparkle" aria-hidden="true">✦</div>
-      <h1 id="title">Hay una sorpresa esperándote</h1>
-      <p id="intro">Tomate un momento, porque preparé algo pensando en vos.</p>
-      <div id="reveal" class="reveal">
-        <p id="message">[Acá va el mensaje personalizado que definamos más adelante.]</p>
-        <div id="amount" class="amount">[IMPORTE]</div>
-        <p>Espero que lo disfrutes y te des ese gusto que tenías pendiente.</p>
+  <main class="card">
+    <div class="eyebrow">Una sorpresa para vos</div>
+    <h1>Tu regalo te espera ✨</h1>
+    <p class="intro">Hay algo especial preparado. Raspá la tarjeta y descubrí qué te toca.</p>
+
+    <section class="scratch-wrap" id="scratchWrap" aria-label="Zona para raspar y descubrir el regalo">
+      <div class="prize">
+        <div class="sparkle" aria-hidden="true">✦ ✧ ✦</div>
+        <div class="small">TU MENSAJE</div>
+        <div class="message" id="giftMessage">[Acá va el mensaje personalizado que definamos más adelante.]</div>
+        <div class="small">TU REGALO</div>
+        <div class="amount" id="giftAmount">[IMPORTE]</div>
+        <div class="small">Un gusto para darte vos</div>
       </div>
-      <button id="openBtn" type="button">Abrir mi regalo ✨</button>
-      <button id="claimBtn" class="secondary hidden" type="button">Avisar que recibí mi regalo</button>
-      <p class="footnote">La transferencia se realiza por separado, después de que llegue el aviso.</p>
+      <canvas id="scratchCanvas" aria-label="Raspá acá con el dedo o el mouse"></canvas>
     </section>
+    <p class="hint" id="hint">Deslizá el dedo o el mouse sobre la superficie plateada para raspar.</p>
+    <div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+    <p class="status" id="status">Descubrí tu sorpresa raspando la tarjeta.</p>
+    <button class="button" id="whatsappButton" type="button">Avisar que recibí mi regalo por WhatsApp</button>
+    <p class="footer">El regalo se coordina por WhatsApp. La transferencia, si corresponde, se realiza por separado.</p>
   </main>
+
   <script>
-    // Más adelante completaremos el mensaje, el importe y el WhatsApp.
-    // El número va en formato internacional, sin +, espacios ni guiones.
-    const WHATSAPP_NUMBER = "";
-    const WHATSAPP_MESSAGE = "¡Ya abrí mi regalo! Gracias por esta sorpresa ❤️";
-    const openBtn=document.getElementById("openBtn"),claimBtn=document.getElementById("claimBtn"),reveal=document.getElementById("reveal");
-    function confettiBurst(){for(let i=0;i<42;i++){const piece=document.createElement("span");piece.className="confetti";piece.style.left=Math.random()*100+"vw";piece.style.background=["#e7c783","#f9fafb","#93c5fd","#f9a8d4"][i%4];piece.style.animationDelay=Math.random()*.55+"s";piece.style.transform=`rotate(${Math.random()*360}deg)`;document.body.appendChild(piece);setTimeout(()=>piece.remove(),3500)}}
-    openBtn.addEventListener("click",()=>{reveal.classList.add("visible");openBtn.classList.add("hidden");claimBtn.classList.remove("hidden");confettiBurst()});
-    claimBtn.addEventListener("click",()=>{if(!WHATSAPP_NUMBER){alert("El botón de WhatsApp todavía no está configurado. Lo completaremos cuando definamos los datos del regalo.");return}const url="https://wa.me/"+WHATSAPP_NUMBER+"?text="+encodeURIComponent(WHATSAPP_MESSAGE);window.location.href=url});
+    // PERSONALIZACIÓN: reemplazá estos textos cuando definamos el mensaje y el importe.
+    const giftMessage = ' [Acá va el mensaje personalizado que definamos más adelante.] '.trim();
+    const giftAmount = '[IMPORTE]';
+    // Para activar WhatsApp, escribí el número con código de país y área, solo dígitos.
+    // Ejemplo de formato argentino: 54911XXXXXXXX (sin +, espacios ni guiones).
+    const whatsappNumber = '';
+
+    document.getElementById('giftMessage').textContent = giftMessage;
+    document.getElementById('giftAmount').textContent = giftAmount;
+
+    const canvas = document.getElementById('scratchCanvas');
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+    const wrap = document.getElementById('scratchWrap');
+    const progressBar = document.getElementById('progressBar');
+    const status = document.getElementById('status');
+    const hint = document.getElementById('hint');
+    const button = document.getElementById('whatsappButton');
+    let drawing = false, revealed = false, lastCheck = 0, scratchedPoints = 0;
+    const threshold = 0.42;
+
+    function paintCover() {
+      const rect = wrap.getBoundingClientRect();
+      const dpr = Math.max(1, window.devicePixelRatio || 1);
+      canvas.width = Math.round(rect.width * dpr);
+      canvas.height = Math.round(rect.height * dpr);
+      canvas.style.width = rect.width + 'px';
+      canvas.style.height = rect.height + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const w = rect.width, h = rect.height;
+      const gradient = ctx.createLinearGradient(0, 0, w, h);
+      gradient.addColorStop(0, '#d9dbe0');
+      gradient.addColorStop(.22, '#858995');
+      gradient.addColorStop(.43, '#f0f1f4');
+      gradient.addColorStop(.62, '#9ca0aa');
+      gradient.addColorStop(.82, '#dfe1e6');
+      gradient.addColorStop(1, '#777b86');
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, w, h);
+      ctx.strokeStyle = 'rgba(255,255,255,.24)';
+      ctx.lineWidth = 1;
+      for (let y = 8; y < h; y += 12) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y - 16); ctx.stroke(); }
+      ctx.fillStyle = 'rgba(30,32,42,.78)';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.font = '700 18px system-ui, sans-serif';
+      ctx.fillText('RASPA ACÁ', w / 2, h / 2 - 8);
+      ctx.font = '24px system-ui, sans-serif';
+      ctx.fillText('✧', w / 2, h / 2 + 25);
+      ctx.globalCompositeOperation = 'destination-out';
+    }
+
+    function coords(e) {
+      const r = canvas.getBoundingClientRect();
+      return { x: e.clientX - r.left, y: e.clientY - r.top };
+    }
+    function scratch(e) {
+      if (revealed) return;
+      const p = coords(e);
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 22, 0, Math.PI * 2);
+      ctx.fill();
+      scratchedPoints++;
+      const now = performance.now();
+      if (now - lastCheck > 180 || scratchedPoints < 3) { lastCheck = now; checkProgress(); }
+    }
+    function checkProgress() {
+      if (revealed) return;
+      const w = canvas.width, h = canvas.height;
+      try {
+        const data = ctx.getImageData(0, 0, w, h).data;
+        // Revisa una muestra para que funcione fluido también en teléfonos.
+        let transparent = 0, total = 0;
+        const step = Math.max(4, Math.floor(Math.sqrt((w * h) / 18000)) * 4);
+        for (let i = 3; i < data.length; i += step) { total++; if (data[i] < 30) transparent++; }
+        const ratio = total ? transparent / total : 0;
+        progressBar.style.width = Math.min(100, ratio / threshold * 100) + '%';
+        status.textContent = ratio >= threshold ? '¡Ya casi! Descubrimos tu sorpresa…' : '¡Seguí raspando!';
+        if (ratio >= threshold) revealGift();
+      } catch (_) { /* Si el muestreo falla, la tarjeta sigue funcionando manualmente. */ }
+    }
+    function revealGift() {
+      if (revealed) return;
+      revealed = true;
+      wrap.classList.add('is-revealed');
+      progressBar.style.width = '100%';
+      hint.textContent = '¡Sorpresa descubierta!';
+      status.textContent = '¡Disfrutá tu regalo! 🎉';
+      button.classList.add('visible');
+      confetti();
+    }
+    canvas.addEventListener('pointerdown', e => { if (revealed) return; drawing = true; canvas.setPointerCapture?.(e.pointerId); scratch(e); });
+    canvas.addEventListener('pointermove', e => { if (drawing) scratch(e); });
+    const stopDrawing = () => { drawing = false; };
+    canvas.addEventListener('pointerup', stopDrawing);
+    canvas.addEventListener('pointercancel', stopDrawing);
+    canvas.addEventListener('lostpointercapture', stopDrawing);
+    window.addEventListener('resize', () => { if (!revealed) paintCover(); });
+
+    button.addEventListener('click', () => {
+      if (!whatsappNumber.trim()) {
+        alert('Falta configurar el número de WhatsApp en el archivo index.html.');
+        return;
+      }
+      const msg = '¡Hola! Ya descubrí y recibí mi regalo 😊';
+      window.open('https://wa.me/' + whatsappNumber.replace(/\D/g, '') + '?text=' + encodeURIComponent(msg), '_blank', 'noopener,noreferrer');
+    });
+
+    function confetti() {
+      const colors = ['#e2d2ff', '#fff0b8', '#f7c7ed', '#b8f0e7', '#ffffff'];
+      const pieces = [];
+      for (let i = 0; i < 85; i++) pieces.push({ x: Math.random() * window.innerWidth, y: -20 - Math.random() * window.innerHeight * .35, vx: (Math.random() - .5) * 3, vy: 2 + Math.random() * 4, size: 4 + Math.random() * 6, rot: Math.random() * 6, vr: (Math.random() - .5) * .18, color: colors[i % colors.length] });
+      const c = document.createElement('canvas');
+      c.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:99';
+      document.body.appendChild(c);
+      const g = c.getContext('2d');
+      const dpr = Math.max(1, window.devicePixelRatio || 1);
+      c.width = innerWidth * dpr; c.height = innerHeight * dpr; g.scale(dpr, dpr);
+      let frames = 0;
+      function tick() {
+        g.clearRect(0, 0, innerWidth, innerHeight);
+        pieces.forEach(p => { p.x += p.vx; p.y += p.vy; p.rot += p.vr; p.vy += .025; g.save(); g.translate(p.x, p.y); g.rotate(p.rot); g.fillStyle = p.color; g.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * .7); g.restore(); });
+        frames++;
+        if (frames < 150 && pieces.some(p => p.y < innerHeight + 20)) requestAnimationFrame(tick); else c.remove();
+      }
+      requestAnimationFrame(tick);
+    }
+
+    paintCover();
   </script>
 </body>
 </html>
