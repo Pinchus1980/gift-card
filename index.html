@@ -13,6 +13,10 @@
     .eyebrow { color:var(--accent); text-transform:uppercase; letter-spacing:.18em; font-size:.72rem; font-weight:700; }
     h1 { margin:12px 0 8px; font-size:clamp(1.8rem,7vw,2.45rem); line-height:1.08; }
     .intro { margin:0 auto 24px; max-width:340px; color:var(--muted); line-height:1.55; }
+    .screen { display:none; }
+    .screen.active { display:block; animation:rise .4s ease-out both; }
+    .welcome-art { width:112px; height:112px; margin:26px auto 24px; border-radius:50%; display:grid; place-items:center; border:1px solid #d7c5ff66; background:radial-gradient(circle at 35% 30%,#5d4b7b,#242033 68%); box-shadow:0 0 45px #bda0ff22,inset 0 0 24px #ffffff0a; }
+    .welcome-art span { font-size:3.1rem; color:#e5d8ff; text-shadow:0 0 22px #d7c5ff88; }
     .scratch-wrap { position:relative; overflow:hidden; border-radius:20px; min-height:218px; background:linear-gradient(145deg,#29243b,#242638); border:1px solid #ffffff18; isolation:isolate; }
     .prize { min-height:218px; padding:24px 18px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:9px; }
     .prize .small { font-size:.82rem; color:#d8c9ff; }
@@ -25,8 +29,10 @@
     .progress { height:4px; background:#ffffff14; border-radius:99px; overflow:hidden; margin-top:16px; }
     .progress span { display:block; width:0%; height:100%; background:linear-gradient(90deg,#bba1ff,#f3d7ff); transition:width .12s linear; }
     .status { min-height:20px; margin:8px 0 0; color:#c9c2db; font-size:.78rem; }
-    .button { appearance:none; border:0; display:none; width:100%; margin-top:20px; padding:15px 18px; border-radius:14px; background:linear-gradient(100deg,#d8c6ff,#f0d9ff); color:#20182e; font:700 1rem system-ui,sans-serif; cursor:pointer; box-shadow:0 8px 26px #bda0ff25; }
+    .button { appearance:none; border:0; display:block; width:100%; margin-top:20px; padding:15px 18px; border-radius:14px; background:linear-gradient(100deg,#d8c6ff,#f0d9ff); color:#20182e; font:700 1rem system-ui,sans-serif; cursor:pointer; box-shadow:0 8px 26px #bda0ff25; }
+    .button.hidden { display:none; }
     .button.visible { display:block; animation:rise .45s ease-out both; }
+    .button.secondary { background:transparent; color:var(--text); border:1px solid #ffffff35; box-shadow:none; margin-top:10px; }
     .footer { margin:20px 0 0; color:#918da4; font-size:.74rem; line-height:1.45; }
     .sparkle { font-size:1.6rem; }
     @keyframes pop { 0%{transform:scale(.985)} 65%{transform:scale(1.012)} 100%{transform:scale(1)} }
@@ -36,26 +42,37 @@
 </head>
 <body>
   <main class="card">
-    <div class="eyebrow">Una sorpresa para vos</div>
-    <h1>Tu regalo te espera ✨</h1>
-    <p class="intro">Hay algo especial preparado. Raspá la tarjeta y descubrí qué te toca.</p>
-
-    <section class="scratch-wrap" id="scratchWrap" aria-label="Zona para raspar y descubrir el regalo">
-      <div class="prize">
-        <div class="sparkle" aria-hidden="true">✦ ✧ ✦</div>
-        <div class="small">TU MENSAJE</div>
-        <div class="message" id="giftMessage">[Acá va el mensaje personalizado que definamos más adelante.]</div>
-        <div class="small">TU REGALO</div>
-        <div class="amount" id="giftAmount">[IMPORTE]</div>
-        <div class="small">Un gusto para darte vos</div>
-      </div>
-      <canvas id="scratchCanvas" aria-label="Raspá acá con el dedo o el mouse"></canvas>
+    <section class="screen active" id="welcomeScreen">
+      <div class="eyebrow">Una sorpresa para vos</div>
+      <h1>Algo especial te espera ✨</h1>
+      <p class="intro">Preparé un regalo para vos. Cuando estés listo, descubrí qué hay detrás de esta sorpresa.</p>
+      <div class="welcome-art" aria-hidden="true"><span>✦</span></div>
+      <button class="button" id="discoverButton" type="button">Descubrir mi regalo ✨</button>
+      <p class="footer">Un pequeño momento preparado especialmente para vos.</p>
     </section>
-    <p class="hint" id="hint">Deslizá el dedo o el mouse sobre la superficie plateada para raspar.</p>
-    <div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
-    <p class="status" id="status">Descubrí tu sorpresa raspando la tarjeta.</p>
-    <button class="button" id="whatsappButton" type="button">Avisar que recibí mi regalo por WhatsApp</button>
-    <p class="footer">El regalo se coordina por WhatsApp. La transferencia, si corresponde, se realiza por separado.</p>
+
+    <section class="screen" id="scratchScreen">
+      <div class="eyebrow">Llegó el momento</div>
+      <h1>Raspá y descubrí 🎁</h1>
+      <p class="intro">Deslizá el dedo sobre la superficie plateada para revelar tu sorpresa.</p>
+      <section class="scratch-wrap" id="scratchWrap" aria-label="Zona para raspar y descubrir el regalo">
+        <div class="prize">
+          <div class="sparkle" aria-hidden="true">✦ ✧ ✦</div>
+          <div class="small">TU MENSAJE</div>
+          <div class="message" id="giftMessage">[Acá va el mensaje personalizado que definamos más adelante.]</div>
+          <div class="small">TU REGALO</div>
+          <div class="amount" id="giftAmount">[IMPORTE]</div>
+          <div class="small">Un gusto para darte vos</div>
+        </div>
+        <canvas id="scratchCanvas" aria-label="Raspá acá con el dedo o el mouse"></canvas>
+      </section>
+      <p class="hint" id="hint">Raspá con el dedo o el mouse sobre la superficie plateada.</p>
+      <div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+      <p class="status" id="status">Tu regalo está a punto de aparecer.</p>
+      <button class="button hidden" id="whatsappButton" type="button">Avisar que recibí mi regalo por WhatsApp</button>
+      <button class="button secondary" id="backButton" type="button">Volver al inicio</button>
+      <p class="footer">El regalo se coordina por WhatsApp. La transferencia, si corresponde, se realiza por separado.</p>
+    </section>
   </main>
 
   <script>
@@ -69,6 +86,10 @@
     document.getElementById('giftMessage').textContent = giftMessage;
     document.getElementById('giftAmount').textContent = giftAmount;
 
+    const welcomeScreen = document.getElementById('welcomeScreen');
+    const scratchScreen = document.getElementById('scratchScreen');
+    const discoverButton = document.getElementById('discoverButton');
+    const backButton = document.getElementById('backButton');
     const canvas = document.getElementById('scratchCanvas');
     const ctx = canvas.getContext('2d', { willReadFrequently: true });
     const wrap = document.getElementById('scratchWrap');
@@ -156,7 +177,22 @@
     canvas.addEventListener('pointerup', stopDrawing);
     canvas.addEventListener('pointercancel', stopDrawing);
     canvas.addEventListener('lostpointercapture', stopDrawing);
-    window.addEventListener('resize', () => { if (!revealed) paintCover(); });
+    window.addEventListener('resize', () => { if (!revealed && scratchScreen.classList.contains('active')) paintCover(); });
+
+    discoverButton.addEventListener('click', () => {
+      welcomeScreen.classList.remove('active');
+      scratchScreen.classList.add('active');
+      // Espera a que la segunda pantalla tenga tamaño real antes de pintar la capa plateada.
+      requestAnimationFrame(() => paintCover());
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    backButton.addEventListener('click', () => {
+      drawing = false;
+      scratchScreen.classList.remove('active');
+      welcomeScreen.classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
 
     button.addEventListener('click', () => {
       if (!whatsappNumber.trim()) {
@@ -187,7 +223,7 @@
       requestAnimationFrame(tick);
     }
 
-    paintCover();
+    // La raspadita se prepara al entrar a la segunda pantalla.
   </script>
 </body>
 </html>
