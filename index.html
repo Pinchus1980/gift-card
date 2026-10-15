@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111827">
+  <title>Un regalo para vos</title>
+  <style>
+    :root{--bg:#111827;--text:#f9fafb;--muted:#cbd5e1;--accent:#e7c783;--accentText:#171717}
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100svh;display:grid;place-items:center;padding:24px 16px;color:var(--text);background:radial-gradient(ellipse at 50% 0%,rgba(231,199,131,.16),transparent 48%),var(--bg);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    .page{width:min(100%,460px);text-align:center}.eyebrow{color:var(--accent);font-size:.76rem;letter-spacing:.22em;text-transform:uppercase;margin-bottom:18px}
+    .stage{position:relative;overflow:hidden;padding:30px 22px;border:1px solid rgba(255,255,255,.12);border-radius:24px;background:linear-gradient(145deg,rgba(255,255,255,.075),rgba(255,255,255,.025));box-shadow:0 24px 80px rgba(0,0,0,.25)}
+    .sparkle{font-size:2.5rem;margin:4px 0 18px;color:var(--accent)}h1{font-size:clamp(1.8rem,8vw,2.7rem);line-height:1.08;margin:0 0 16px}p{color:var(--muted);line-height:1.65;margin:0 auto;max-width:34ch}
+    .reveal{opacity:0;transform:translateY(14px);max-height:0;overflow:hidden;pointer-events:none;transition:opacity .65s ease,transform .65s ease,max-height .8s ease,margin .6s ease;margin-top:0}
+    .reveal.visible{opacity:1;transform:translateY(0);max-height:420px;pointer-events:auto;margin-top:26px}.amount{color:var(--accent);font-size:clamp(2rem,9vw,3rem);font-weight:800;letter-spacing:-.04em;margin:10px 0 18px}
+    button{border:0;border-radius:999px;padding:15px 22px;width:100%;background:var(--accent);color:var(--accentText);font-size:1rem;font-weight:750;cursor:pointer;margin-top:24px;transition:transform .15s ease,filter .15s ease}
+    button:hover{filter:brightness(1.06)}button:active{transform:scale(.985)}button:focus-visible{outline:3px solid white;outline-offset:4px}
+    .secondary{background:transparent;border:1px solid rgba(255,255,255,.22);color:var(--text);margin-top:12px}.footnote{color:#94a3b8;font-size:.78rem;margin-top:18px}.hidden{display:none!important}
+    .confetti{position:fixed;top:-12px;width:8px;height:13px;pointer-events:none;z-index:5;animation:fall 2.8s linear forwards}@keyframes fall{to{transform:translateY(110svh) rotate(720deg);opacity:.15}}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+  </style>
+</head>
+<body>
+  <main class="page">
+    <div class="eyebrow">Algo especial para vos</div>
+    <section class="stage" aria-live="polite">
+      <div class="sparkle" aria-hidden="true">✦</div>
+      <h1 id="title">Hay una sorpresa esperándote</h1>
+      <p id="intro">Tomate un momento, porque preparé algo pensando en vos.</p>
+      <div id="reveal" class="reveal">
+        <p id="message">[Acá va el mensaje personalizado que definamos más adelante.]</p>
+        <div id="amount" class="amount">[IMPORTE]</div>
+        <p>Espero que lo disfrutes y te des ese gusto que tenías pendiente.</p>
+      </div>
+      <button id="openBtn" type="button">Abrir mi regalo ✨</button>
+      <button id="claimBtn" class="secondary hidden" type="button">Avisar que recibí mi regalo</button>
+      <p class="footnote">La transferencia se realiza por separado, después de que llegue el aviso.</p>
+    </section>
+  </main>
+  <script>
+    // Más adelante completaremos el mensaje, el importe y el WhatsApp.
+    // El número va en formato internacional, sin +, espacios ni guiones.
+    const WHATSAPP_NUMBER = "";
+    const WHATSAPP_MESSAGE = "¡Ya abrí mi regalo! Gracias por esta sorpresa ❤️";
+    const openBtn=document.getElementById("openBtn"),claimBtn=document.getElementById("claimBtn"),reveal=document.getElementById("reveal");
+    function confettiBurst(){for(let i=0;i<42;i++){const piece=document.createElement("span");piece.className="confetti";piece.style.left=Math.random()*100+"vw";piece.style.background=["#e7c783","#f9fafb","#93c5fd","#f9a8d4"][i%4];piece.style.animationDelay=Math.random()*.55+"s";piece.style.transform=`rotate(${Math.random()*360}deg)`;document.body.appendChild(piece);setTimeout(()=>piece.remove(),3500)}}
+    openBtn.addEventListener("click",()=>{reveal.classList.add("visible");openBtn.classList.add("hidden");claimBtn.classList.remove("hidden");confettiBurst()});
+    claimBtn.addEventListener("click",()=>{if(!WHATSAPP_NUMBER){alert("El botón de WhatsApp todavía no está configurado. Lo completaremos cuando definamos los datos del regalo.");return}const url="https://wa.me/"+WHATSAPP_NUMBER+"?text="+encodeURIComponent(WHATSAPP_MESSAGE);window.location.href=url});
+  </script>
+</body>
+</html>
