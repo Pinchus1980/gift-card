@@ -41,6 +41,8 @@
     .prize { min-height:218px; padding:24px 18px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:9px; }
     .prize .small { font-size:.82rem; color:#d8c9ff; }
     .message { font-size:1.08rem; line-height:1.4; font-weight:650; white-space:pre-wrap; }
+    .feliz-dia { display:block; font-size:clamp(1.8rem,7vw,2.5rem); line-height:1.08; font-weight:850; margin-bottom:12px; }
+    .message-rest { display:block; white-space:pre-line; }
     .amount { margin-top:2px; font-size:clamp(2rem,10vw,3rem); line-height:1; font-weight:800; letter-spacing:-.04em; }
     .amount-reveal { visibility:hidden; }
     .scratch-wrap.is-revealed .amount-reveal { visibility:visible; animation:rise .45s ease-out both; }
@@ -105,13 +107,17 @@
 
   <script>
     // PERSONALIZACIÓN: reemplazá estos textos cuando definamos el mensaje y el importe.
-    const giftMessage = 'FELIZ DIAAAAAA!!!!\nNo nos olvidamos de vos, pero preferimos que te compres lo que vos realmente quieras (como por ejemplo tus libritos de gays jajajaja)\nTE AMAMOS\n(Cata-Guada-Sergio)';
+    const giftMessage = 'FELIZ DIAAAAAA!!!!\nNo nos olvidamos de vos, pero preferimos que te compres lo que vos realmente quieras (tus gays jajajaja)\nTE AMAMOS\n(Cata-Guada-Sergio)';
     const giftAmount = '$200.000';
     // Para activar WhatsApp, escribí el número con código de país y área, solo dígitos.
     // Ejemplo de formato argentino: 54911XXXXXXXX (sin +, espacios ni guiones).
     const whatsappNumber = '5491130329069';
 
-    document.getElementById('giftMessage').textContent = giftMessage;
+    const giftMessageEl = document.getElementById('giftMessage');
+    const messageLines = giftMessage.split('\n');
+    giftMessageEl.innerHTML = '<span class="feliz-dia"></span><span class="message-rest"></span>';
+    giftMessageEl.querySelector('.feliz-dia').textContent = messageLines.shift();
+    giftMessageEl.querySelector('.message-rest').textContent = messageLines.join('\n');
     document.getElementById('giftAmount').textContent = giftAmount;
 
     const welcomeScreen = document.getElementById('welcomeScreen');
