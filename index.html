@@ -99,7 +99,7 @@
       <p class="hint" id="hint">Deslizá el dedo sobre la superficie plateada para revelar tu sorpresa.</p>
       <div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
       <p class="status" id="status"></p>
-      <button class="button hidden" id="whatsappButton" type="button">Avisar que recibí mi regalo por WhatsApp</button>
+      <button class="button hidden" id="whatsappButton" type="button">Avisar que descubrí la sorpresa por WhatsApp</button>
       <button class="button secondary" id="backButton" type="button">Volver al inicio</button>
       
     </section>
@@ -107,7 +107,7 @@
 
   <script>
     // PERSONALIZACIÓN: reemplazá estos textos cuando definamos el mensaje y el importe.
-    const giftMessage = 'FELIZ DIAAAAAA!!!!\nNo nos olvidamos de vos, pero preferimos que te compres lo que vos realmente quieras (como por ejemplo los libritos de tus gays jajajaja)\nTE AMAMOS\n(Cata-Guada-Sergio)';
+    const giftMessage = 'FELIZ DIAAAAAA!!!!\nNo nos olvidamos de vos, pero preferimos que te compres lo que vos realmente quieras (tus gays jajajaja)\nTE AMAMOS\n(Cata-Guada-Sergio)';
     const giftAmount = '$200.000';
     // Para activar WhatsApp, escribí el número con código de país y área, solo dígitos.
     // Ejemplo de formato argentino: 54911XXXXXXXX (sin +, espacios ni guiones).
@@ -233,7 +233,7 @@
         alert('Falta configurar el número de WhatsApp en el archivo index.html.');
         return;
       }
-      const msg = '¡Hola! Ya descubrí y recibí mi regalo 😊';
+      const msg = '¡YA DESCUBRÍ LA SORPRESA! 👀🎁';
       window.open('https://wa.me/' + whatsappNumber.replace(/\D/g, '') + '?text=' + encodeURIComponent(msg), '_blank', 'noopener,noreferrer');
     });
 
